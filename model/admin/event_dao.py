@@ -171,7 +171,7 @@ class EventDao:
                 , `event`.start_date AS start_date
                 , `event`.end_date AS end_date 
                 , `event`.banner_image AS banner_image
-                , `event`.detaill_image AS detail_image
+                , `event`.detail_image AS detail_image
             FROM `events` AS `event`
                 INNER JOIN event_types AS event_type
                     ON `event`.event_type_id = event_type.id
