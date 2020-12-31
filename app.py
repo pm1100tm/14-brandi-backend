@@ -10,12 +10,14 @@ from view import create_endpoints
 
 class CustomJSONEncoder(JSONEncoder):
     def default(self, obj):
-        import datetime
+        import datetime, decimal
         try:
             if isinstance(obj, datetime.date):
                 return obj.isoformat(sep=' ')
             if isinstance(obj, datetime.datetime):
                 return obj.isoformat(sep=' ')
+            if isinstance(obj, decimal.Decimal):
+                return float(obj)
             iterable = iter(obj)
         except TypeError:
             pass
