@@ -208,3 +208,14 @@ class CategoryFilterRule(AbstractRule):
         if value not in filter_set:
             errors.append('accept only (menu, both, none) as a filter value')
         return value, errors
+
+
+class PageRule(AbstractRule):
+    """ 페이지네이션 page는 1이상
+
+    """
+    def validate(self, value):
+        errors = []
+        if value <= 0:
+            errors.append('page cannot be less than 1')
+        return value, errors

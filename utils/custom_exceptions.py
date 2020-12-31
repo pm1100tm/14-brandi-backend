@@ -223,10 +223,10 @@ class DateMissingOne(CustomUserError):
         super().__init__(status_code, message, error_message)
 
 
-class EventSearchTwoInput(CustomUserError):
+class SearchTwoInput(CustomUserError):
     def __init__(self, error_message):
         status_code = 400
-        message = 'event search inputs must be only one'
+        message = 'search inputs must be only one'
         error_message = error_message
         super().__init__(status_code, message, error_message)
 
@@ -265,3 +265,12 @@ class FilterDoesNotMatch(CustomUserError):
         error_massage = error_massage
 
         super().__init__(status_code, message, error_massage)
+
+
+class SearchFilterRequired(CustomUserError):
+    def __init__(self, error_message):
+        status_code = 400
+        message = 'filter must be at least one'
+        error_message = error_message
+
+        super().__init__(status_code, message, error_message)

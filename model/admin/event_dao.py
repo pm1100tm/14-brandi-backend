@@ -143,7 +143,6 @@ class EventDao:
             return {'events': events, 'total_count': count[0]['total_count']}
 
     def get_products_list_to_post(self, connection, data):
-        pass
         """ 기획전에 추가할 상품 조회
 
         Args:
@@ -165,8 +164,8 @@ class EventDao:
                 , product.product_code AS product_number
                 , product.`name` AS product_name
                 , seller.`name` AS seller_name
-                , product.original_price AS original_price
-                , prodcut.discounted_price AS discounted_price
+                , product.origin_price AS original_price
+                , product.discounted_price AS discounted_price
                 , product.discount_rate AS discount_rate
                 , product.is_sale AS is_sale
                 , product.is_display AS is_display
@@ -177,29 +176,58 @@ class EventDao:
                 INNER JOIN product_images AS product_image
                     ON product.id = product_image.product_id AND product_image.order_index = 1
                 INNER JOIN sellers AS seller
-                    ON product.seller_id = seller.id
+                    ON product.seller_id = seller.account_id
             WHERE 
                 product.is_deleted = 0
         """
 
-        """
-                # 검색하기 [최소 1개 필수] 상품명, 상품번호, 셀러명, 셀러번호, 상품 분류, 상품 등록일
-                -- AND product.name LIKE CONCAT('%', %(product_name)s, '%')														# 상품명 -- like 어떻게 하는지 알아보기
-                -- AND product.product_code = %(product_code)s																	# 상품번호
-                -- AND seller.`name` = %(seller_name)s																			# 셀러명
-                -- AND seller.account_id = %(seller_id)s																		# 셀러번호
-                -- AND product.created_at BETWEEN CONCAT(%(YYYY-MM-DD)s, ' 00:00:00') AND CONCAT(%(YYYY-MM-DD)s, ' 23:59:59') 	# 상품 등록일 기준으로 상품 조회하기 [날짜 두개 들어와야함]
-                # 상품분류 [셀러구분 셋 중 하나]
-                -- AND seller.seller_attribute_type_id IN (1, 2, 3) 															# 트렌드 상품 불러오기
-                -- AND seller.seller_attribute_type_id IN (4, 5, 6) 															# 브랜드 상품 블러오기
-                -- AND seller.seller_attribute_type_id = 7																		# 뷰티 상품 불러오기
-                    -- AND product.main_category_id = {main_category_id}														# 1차 카테고리에 맞게 상품 불러오기 [셀러 구분 선택시 선택가능]
-                        -- AND product.sub_category_id = {sub_category_id}														# 2차 카테고리에 맞게 상품 불러오기 [1차 카테고리 선택시 선택가능]
-            ORDER BY 
-                product.id DESC
-            LIMIT 0, 10;
+        # 상품명, 상품번호
+        if data['product_name']:
+            extra_sql += ' AND product.name LIKE %(product_name)s'
+        elif data['product_number']:
+            extra_sql += ' AND product.product_code = %(product_number)s'
 
-        """
+        # 셀러명, 셀러번호
+        if data['seller_name']:
+            extra_sql += ' AND seller.`name` = %(seller_name)s'
+        elif data['seller_number']:
+            extra_sql += ' AND seller.account_id = %(seller_number)s'
+
+        # 상품 등록일
+        if data['start_date'] and data['end_date']:
+            extra_sql += """
+                AND product.created_at BETWEEN CONCAT(%(start_date)s, " 00:00:00") AND CONCAT(%(end_date)s, " 23:59:59")
+            """
+
+        # 상품분류 -- 구분파트 트랜드, 브랜드, 뷰티 순서
+        if data['menu_id'] == 4:
+            extra_sql += ' AND seller.seller_attribute_type_id IN (1, 2, 3)'
+        elif data['menu_id'] == 5:
+            extra_sql += ' AND seller.seller_attribute_type_id IN (4, 5, 6)'
+        elif data['menu_id'] == 6:
+            extra_sql += ' AND seller.seller_attribute_type_id = 7'
+
+        # 1차 카테고리
+        if data['main_category_id']:
+            extra_sql += ' AND product.main_category_id = %(main_category_id)s'
+
+        # 2차 카테고리
+        if data['sub_category_id']:
+            extra_sql += ' AND product.sub_category_id = %(sub_category_id)s'
+
+        sql += extra_sql
+        total_count_sql += extra_sql
+
+        sql += ' ORDER BY product.id DESC LIMIT %(page)s, %(length)s;'
+
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            cursor.execute(sql, data)
+            products = cursor.fetchall()
+            if not products:
+                return {'products': products, 'total_count': 0}
+            cursor.execute(total_count_sql, data)
+            count = cursor.fetchone()
+            return {'products': products, 'total_count': count['total_count']}
 
     def get_product_category(self, connection, data):
         """  기획전에 추가될 상품 조회 검색조건에서 카테고리 불러오기

@@ -12,7 +12,7 @@ from .sample_user_view import SampleUserView
 from .store.user_view import SignUpView, SignInView, GoogleSocialSignInView
 from .store.destination_view import DestinationView, DestinationDetailView
 from .store.cart_item_view import CartItemView, CartItemAddView
-from .admin.event_view import EventView, EventProductsCategoryView
+from .admin.event_view import EventView, EventProductsCategoryView, EventProductsToAddView
 from utils.error_handler import error_handle
 
 
@@ -125,9 +125,16 @@ def create_endpoints(app, services, database):
 # ----------------------------------------------------------------------------------------------------------------------
     app.add_url_rule('/events', view_func=EventView.as_view('event_view', services.event_service, database))
     app.add_url_rule('/event/products/category',
-                     view_func=EventProductsCategoryViewgit .as_view(
+                     view_func=EventProductsCategoryView.as_view(
                          'event_product_category_view',
-                         services.event_service, database
+                         services.event_service,
+                         database
+                     ))
+    app.add_url_rule('/event/products',
+                     view_func=EventProductsToAddView.as_view(
+                         'event_product_to_add_view',
+                         services.event_service,
+                         database
                      ))
 # ----------------------------------------------------------------------------------------------------------------------
 # 김민서 ◟( ˘ ³˘)◞ ♡
