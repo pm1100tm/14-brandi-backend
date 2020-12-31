@@ -1,23 +1,20 @@
 import json
+
 from flask import jsonify, request
 from flask.views import MethodView
 from utils.connection import get_connection
-from utils.custom_exceptions import DatabaseCloseFail, DateMissingOne, SearchTwoInput, FilterDoesNotMatch, SearchFilterRequired
+from utils.custom_exceptions import DatabaseCloseFail, DateMissingOne, SearchTwoInput, FilterDoesNotMatch, \
+    SearchFilterRequired
 
 from utils.rules import NumberRule, EventStatusRule, EventExposureRule, DateRule, ProductMenuRule, CategoryFilterRule, \
     PageRule
 from flask_request_validator import (
     Param,
+    PATH,
     JSON,
     GET,
     validate_params
 )
-
-
-def date_converter(o):
-    import datetime
-    if isinstance(o, datetime.datetime):
-        return o.__str__()
 
 
 class EventView(MethodView):
@@ -69,8 +66,36 @@ class EventView(MethodView):
                 raise DatabaseCloseFail('database close fail')
 
 
-class EventProductsCategoryView(MethodView):
+class EventDetailView(MethodView):
+    def __init__(self, service, database):
+        self.service = service
+        self.database = database
 
+    @validate_params(
+        Param('event_id', PATH, int, required=True)
+    )
+    def get(self, *args):
+        data = {
+            'event_id': args[0]
+        }
+
+        try:
+            connection = get_connection(self.database)
+            result = self.service.get_event_detail_service(connection, data)
+            return jsonify(result)
+
+        except Exception as e:
+            raise e
+
+        finally:
+            try:
+                if connection:
+                    connection.close()
+            except Exception:
+                raise DatabaseCloseFail('database close fail')
+
+
+class EventProductsCategoryView(MethodView):
     def __init__(self, service, database):
         self.service = service
         self.database = database
