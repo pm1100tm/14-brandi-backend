@@ -180,3 +180,31 @@ class DateRule(AbstractRule):
         if not regex.match(value):
             errors.append('accept only alphabetic characters')
         return value, errors
+
+
+class ProductMenuRule(AbstractRule):
+    """ 상품 분류 메뉴 규칙 (트렌드, 브랜드, 뷰티) id는 (4, 5, 6)
+
+        Author: 강두연
+
+        History:
+            2020-12-31(강두연): 작성
+    """
+    def validate(self, value):
+        menu_set = (4, 5, 6)
+        errors = []
+        if value not in menu_set:
+            errors.append('accept only id of trend, brand, beauty')
+        return value, errors
+
+
+class CategoryFilterRule(AbstractRule):
+    """ 카테고리 불러올 때 필터 규칙
+
+    """
+    def validate(self, value):
+        filter_set = ('menu', 'both', 'none')
+        errors = []
+        if value not in filter_set:
+            errors.append('accept only (menu, both, none) as a filter value')
+        return value, errors

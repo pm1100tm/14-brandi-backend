@@ -238,3 +238,30 @@ class EventDoesNotExist(CustomUserError):
         error_message = error_message
 
         super().__init__(status_code, message, error_message)
+
+
+class CategoryMenuDoesNotMatch(CustomUserError):
+    def __init__(self, error_message):
+        status_code = 400
+        message = 'menu id does not match with category id'
+        error_message = error_message
+
+        super().__init__(status_code, message, error_message)
+
+
+class CategoryDoesNotExist(CustomUserError):
+    def __init__(self, error_massage):
+        status_code = 400
+        message = 'category not exist'
+        error_massage = error_massage
+
+        super().__init__(status_code, message, error_massage)
+
+
+class FilterDoesNotMatch(CustomUserError):
+    def __init__(self, error_massage):
+        status_code = 400
+        message = 'filter does not match'
+        error_massage = error_massage
+
+        super().__init__(status_code, message, error_massage)
