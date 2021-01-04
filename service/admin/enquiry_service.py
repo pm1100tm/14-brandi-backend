@@ -1,4 +1,7 @@
-from utils.custom_exceptions import EnquiryFilterNotExist, DateMissingOne, EventSearchTwoInput
+from utils.custom_exceptions import (EnquiryFilterNotExist,
+                                     DateMissingOne,
+                                     EventSearchTwoInput
+                                     )
 
 
 class EnquiryService:

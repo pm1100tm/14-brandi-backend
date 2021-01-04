@@ -1,9 +1,10 @@
 import json
 
-from flask import jsonify, request
+from flask import jsonify, g
 from flask.views import MethodView
 from utils.connection import get_connection
 from utils.custom_exceptions import DatabaseCloseFail, DateMissingOne, EventSearchTwoInput
+from utils.decorator import signin_decorator
 
 from utils.rules import NumberRule, EventStatusRule, DateRule, PageRule
 from flask_request_validator import (
