@@ -8,7 +8,7 @@ import bcrypt, jwt
 
 class SellerService:
 
-    def __init__(self, seller_dao,config):
+    def __init__(self, seller_dao, config):
         self.seller_dao = seller_dao
         self.config = config
 

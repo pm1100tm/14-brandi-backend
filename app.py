@@ -7,12 +7,7 @@ from flask_cors    import CORS
 from view import create_endpoints
 
 #admin
-from model   import OrderDao
-
 from model import OrderDao, OrderDetailDao
-from model import SellerDao
-from model import CreateProductDao
-
 from service import OrderService
 
 #admin2
@@ -85,8 +80,12 @@ def create_app(test_config=None):
 
     database = app.config['DB']
 
+
+
     # persistence Layer
+
     sample_user_dao = SampleUserDao()
+
     destination_dao = DestinationDao()
     cart_item_dao = CartItemDao()
     sender_dao = SenderDao()
@@ -94,9 +93,10 @@ def create_app(test_config=None):
     store_order_dao = StoreOrderDao()
     order_dao = OrderDao()
 
-    # admin2
+    # admin
     order_detail_dao = OrderDetailDao()
 
+    # admin2
     seller_dao = SellerDao()
     seller_info_dao = SellerInfoDao()
     product_create_dao = ProductCreateDao()
@@ -105,7 +105,6 @@ def create_app(test_config=None):
     # business Layer
     services = Services
     services.sample_user_service = SampleUserService(sample_user_dao)
-
     services.seller_info_service = SellerInfoService(seller_info_dao)
     
     # business Layer,   깔끔한 관리 방법을 생각하기
@@ -123,11 +122,8 @@ def create_app(test_config=None):
     #admin1
     services.event_service = EventService(event_dao)
     services.order_service = OrderService(order_dao)
-
     services.order_detail_service = OrderService(order_detail_dao)
-    services.seller_service = SellerService(seller_dao,app.config)
-    services.create_product_service = CreateProductService(create_product_dao)
-    
+
     #admin2
     services.seller_service         = SellerService(seller_dao, app.config)
     services.seller_info_service    = SellerInfoService(seller_info_dao)

@@ -11,6 +11,7 @@ from utils.custom_exceptions import (
 
 
 class SellerDao:
+
     def get_username(self, connection, data):
 
         sql = """
