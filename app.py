@@ -59,8 +59,6 @@ class CustomJSONEncoder(JSONEncoder):
 
 # for getting multiple service classes
 
-
-
 class Services:
     pass
 

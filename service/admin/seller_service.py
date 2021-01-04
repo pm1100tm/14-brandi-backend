@@ -70,6 +70,20 @@ class SellerService:
 
         return token
 
+
+    def seller_search_service(self, connection, data, page, page_view):
+
+        seller_list = self.seller_dao.get_seller_search(connection, data)
+        # page_size 몇개씩 보여줄건가
+        page = int(page)
+        page_view = int(page_view)
+
+        limit     = page * page_view
+        offset    = limit - page_view
+        seller_list  = seller_list[offset:limit]
+
+        return seller_list
+
       
 class SellerInfoService:
 
