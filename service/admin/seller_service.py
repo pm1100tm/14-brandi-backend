@@ -4,12 +4,15 @@ from utils.custom_exceptions import (
                                         TokenCreateDenied,
                                         InvalidUser
                                     )
+
+from model                  import SellerDao
+
 import bcrypt, jwt
 
 class SellerService:
 
-    def __init__(self, seller_dao, config):
-        self.seller_dao = seller_dao
+    def __init__(self, config):
+        self.seller_dao = SellerDao()
         self.config = config
 
     def seller_signup_service(self, connection, data):
@@ -17,7 +20,6 @@ class SellerService:
         # 중복검사
         username = self.seller_dao.get_username(connection, data)
         if username:
-            print("username exist")
             raise UserAlreadyExist('already_exist')
 
         # password hash
@@ -46,10 +48,11 @@ class SellerService:
 
     def seller_signin_service(self, connection, data):
 
+
         seller_info = self.seller_dao.get_seller_infomation(connection, data)
 
         if not seller_info or not bcrypt.checkpw(data['password'].encode('utf-8'),seller_info['password'].encode('utf-8')):
-            raise InvalidUser('invalid_user')
+            raise UserAlreadyExist('invalid_user')
 
         token = self.token_generator(seller_info['id'], seller_info['username'])
 
@@ -74,7 +77,7 @@ class SellerService:
     def seller_search_service(self, connection, data, page, page_view):
 
         seller_list = self.seller_dao.get_seller_search(connection, data)
-        # page_size 몇개씩 보여줄건가
+
         page = int(page)
         page_view = int(page_view)
 
@@ -184,11 +187,7 @@ class SellerInfoService:
 #            if data['order_index'] == 1:
 #            return self.seller_dao.patch_seller_info(connection, data)
 
-
-
             return self.seller_dao.post_person_in_charge(connection, data) #추가 담당자 로직
-
-
 
 # 그 해당 값이 동시에 들어올 수 있으니까 get 리스트를 써야하는게 맞dma
         except KeyError:

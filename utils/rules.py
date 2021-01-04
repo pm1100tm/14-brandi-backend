@@ -304,7 +304,6 @@ class CategoryFilterRule(AbstractRule):
 
 class PageRule(AbstractRule):
     """ 페이지네이션 page는 1이상
-
     """
     def validate(self, value):
         errors = []

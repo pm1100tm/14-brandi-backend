@@ -4,7 +4,7 @@ from flask.views             import MethodView
 
 from utils.connection        import get_connection
 from utils.custom_exceptions import DatabaseCloseFail
-from utils.rules             import NumberRule, DefaultRule, EmailRule
+from utils.rules             import NumberRule, DefaultRule, EmailRule, PageRule, PasswordRule, PhoneRule
 
 from flask_request_validator import (
     Param,
@@ -22,8 +22,8 @@ class SellerSearchView(MethodView):
         self.database = database
 
     @validate_params(
-        Param('page', GET, int, required=False),
-        Param('page_view', GET, int, required=False),
+        Param('page', GET, int, required=False, rules=[PageRule()]),
+        Param('page_view', GET, int, required=False,),
         Param('account_id', JSON, int, required=False),
         Param('username', JSON, str, required=False),
         Param('seller_english_name', JSON, str, required=False),
@@ -73,17 +73,20 @@ class SellerSearchView(MethodView):
 
 class SellerSignupView(MethodView):
 
+    def __init__(self, services, database):
+        self.service = services
+        self.database = database
+
     @validate_params(
         Param('username', JSON, str),
-        Param('password', JSON, str),
+        Param('password', JSON, str, rules=[PasswordRule()]),
         Param('seller_attribute_type_id', JSON, str),
         Param('name', JSON, str),
         Param('english_name', JSON, str),
-        Param('contact_phone', JSON, str),
+        Param('contact_phone', JSON, str, rules=[PhoneRule()]),
         Param('service_center_number', JSON, str),
     )
     def post(self, *args):
-
         data = {
             'username' : args[0],
             'password' : args[1],
@@ -95,6 +98,7 @@ class SellerSignupView(MethodView):
         }
 
         try:
+            print(args)
             connection = get_connection(self.database)
             self.service.seller_signup_service(connection,data)
             connection.commit()
@@ -115,15 +119,17 @@ class SellerSignupView(MethodView):
 
 class SellerSigninView(MethodView):
 
-    def __init__(self, service, database):
-        self.service = service
+    def __init__(self, services, database):
+        self.service = services
         self.database = database
 
     @validate_params(
         Param('username', JSON, str),
         Param('password', JSON, str)
     )
+
     def post(self, *args):
+        connection = None
         data = {
             'username': args[0],
             'password': args[1]
@@ -132,11 +138,13 @@ class SellerSigninView(MethodView):
         try:
             connection = get_connection(self.database)
             token = self.service.seller_signin_service(connection, data)
-            connection.commit()
             return jsonify({'message':'login success','token': token}),200
 
         except Exception as e:
-            connection.rollback()                
+            connection.rollback()
+
+
+
 
 
 class SellerInfoView(MethodView):
@@ -195,7 +203,6 @@ class SellerInfoView(MethodView):
 
     @validate_params(
         Param('id', FORM, str, rules=[NumberRule()]),
-
         Param('id', JSON, str, rules=[NumberRule()]),
         Param('name', JSON, str, rules=[DefaultRule()]),
         Param('phone', JSON, str, rules=[NumberRule()]),
