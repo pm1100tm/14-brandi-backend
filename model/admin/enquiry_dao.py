@@ -255,7 +255,7 @@ class EnquiryDao:
             VALUES (
                 %(answer)s
                 , %(enquiry_id)s
-                , 1
+                , %(account_id)s
                 )
         """
 

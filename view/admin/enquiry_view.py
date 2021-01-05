@@ -22,6 +22,7 @@ class EnquiryView(MethodView):
         self.service = service
         self.database = database
 
+    @signin_decorator()
     @validate_params(
         Param('product_name', JSON, str, required=False),
         Param('id', JSON, str, required=False),
@@ -29,11 +30,11 @@ class EnquiryView(MethodView):
         Param('membership_number', JSON, str, required=False),
         Param('is_answered', JSON, str, required=False),
         Param('type', JSON, str, required=False),
-        Param('start_date', JSON, str, required=False),
-        Param('end_date', JSON, str, required=False),
+        Param('start_date', JSON, str, required=False, rules=[DateRule()]),
+        Param('end_date', JSON, str, required=False, rules=[DateRule()]),
         Param('page', JSON, int, required=True, rules=[PageRule()]),
         Param('length', JSON, int, required=True),
-        Param('response_date', JSON, int, required=False)
+        Param('response_date', JSON, int, required=False, rules=[DateRule()])
     )
     def get(self, *args):
         data = {
@@ -47,7 +48,8 @@ class EnquiryView(MethodView):
             'end_date': args[7],
             'page': args[8],
             'length': args[9],
-            'response_date': args[10]
+            'response_date': args[10],
+            'account_id': g.account_id
         }
 
         try:
@@ -65,12 +67,14 @@ class EnquiryView(MethodView):
             except Exception:
                 raise DatabaseCloseFail('database close fail')
 
+    @signin_decorator()
     @validate_params(
         Param('id', JSON, int, required=True)
     )
     def delete(self, *args):
         data = {
-            'id': args[0]
+            'id': args[0],
+            'account_id': g.account_id
         }
 
         try:
@@ -96,12 +100,14 @@ class AnswerView(MethodView):
         self.service = service
         self.database = database
 
+    @signin_decorator()
     @validate_params(
         Param('enquiry_id', PATH, int, required=True)
     )
     def get(self, *args):
         data = {
-            'enquiry_id': args[0]
+            'enquiry_id': args[0],
+            'account_id': g.account_id
         }
 
         try:
@@ -119,7 +125,7 @@ class AnswerView(MethodView):
             except Exception:
                 raise DatabaseCloseFail('database close fail')
 
-    # 마스터계정 signup, signin은 어디서??
+    @signin_decorator()
     @validate_params(
         Param('enquiry_id', PATH, int),
         Param('answer', JSON, str)
@@ -127,7 +133,8 @@ class AnswerView(MethodView):
     def post(self, *args):
         data = {
             'enquiry_id': args[0],
-            'answer': args[1]
+            'answer': args[1],
+            'account_id': g.account_id
         }
         try:
             connection = get_connection(self.database)
@@ -143,6 +150,7 @@ class AnswerView(MethodView):
             except Exception:
                 raise DatabaseCloseFail('database close fail')
 
+    @signin_decorator()
     @validate_params(
         Param('enquiry_id', PATH, int),
         Param('answer', JSON, str)
@@ -150,7 +158,8 @@ class AnswerView(MethodView):
     def put(self, *args):
         data = {
             'enquiry_id': args[0],
-            'answer': args[1]
+            'answer': args[1],
+            'account_id': g.account_id
         }
 
         try:
@@ -167,12 +176,14 @@ class AnswerView(MethodView):
             except Exception:
                 raise DatabaseCloseFail('database close fail')
 
+    @signin_decorator()
     @validate_params(
         Param('enquiry_id', PATH, int),
     )
     def delete(self, *args):
         data = {
-            'enquiry_id': args[0]
+            'enquiry_id': args[0],
+            'account_id': g.account_id
         }
 
         try:
