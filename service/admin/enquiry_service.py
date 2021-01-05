@@ -75,11 +75,12 @@ class EnquiryService:
                 2020-12-29(이성보): 검색 조건에 맞게 변형로직 작성
         """
         try:
+            # ~~~ 이기때문에 ~~~ 받아서
             data['page'] = (data['page'] - 1) * data['length']
 
             if (data['start_date'] and not data['end_date']) or (not data['start_date'] and data['end_date']):
                 raise DateMissingOne('start_date or end_date is missing')
-
+            #
             if data['product_name'] and data['seller_name']:
                 raise EventSearchTwoInput('search value accept only one of name or number')
 
@@ -92,6 +93,7 @@ class EnquiryService:
             raise e
 
     def get_answer_service(self, connection, data):
+        # try except 꼭 서야하는지?
         try:
             return self.enquiry_dao.get_answer_detail(connection, data)
 

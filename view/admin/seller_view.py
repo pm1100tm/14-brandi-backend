@@ -275,7 +275,7 @@ class SellerInfoView(MethodView):
             connection = get_connection(self.database)
 
             # update sellers table
-            # self.service.patch_seller_info(connection, data)
+            self.service.patch_seller_info(connection, data)
 
             # update additional_contacts table
             # self.service.patch_seller_info(connection, data)

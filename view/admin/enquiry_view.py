@@ -66,11 +66,11 @@ class EnquiryView(MethodView):
                 raise DatabaseCloseFail('database close fail')
 
     @validate_params(
-        Param('enquiry_id', JSON, int, required=True)
+        Param('id', JSON, int, required=True)
     )
     def delete(self, *args):
         data = {
-            'enquiry_id': args[0]
+            'id': args[0]
         }
 
         try:
@@ -119,6 +119,7 @@ class AnswerView(MethodView):
             except Exception:
                 raise DatabaseCloseFail('database close fail')
 
+    # 마스터계정 signup, signin은 어디서??
     @validate_params(
         Param('enquiry_id', PATH, int),
         Param('answer', JSON, str)

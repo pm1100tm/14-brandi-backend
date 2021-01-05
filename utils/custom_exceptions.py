@@ -1001,3 +1001,30 @@ class AnswerCreateFail(CustomUserError):
         message = 'answer create'
         error_message = error_message
         super().__init__(status_code, message, error_message)
+
+
+class AnswerDoesNotExist(CustomUserError):
+    def __init__(self, error_message):
+        status_code = 404
+        message = 'answer not exist'
+        error_message = error_message
+
+        super().__init__(status_code, message, error_message)
+
+
+class AnswerDeleteFail(CustomUserError):
+
+    def __init__(self, error_message):
+        status_code = 400
+        message = 'answer delete'
+        error_message = error_message
+        super().__init__(status_code, message, error_message)
+
+
+class EnquiryDeleteFail(CustomUserError):
+
+    def __init__(self, error_message):
+        status_code = 400
+        message = 'enquiry delete'
+        error_message = error_message
+        super().__init__(status_code, message, error_message)
