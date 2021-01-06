@@ -124,9 +124,9 @@ class SellerShopSearchView(MethodView):
             "result": [
             {
             "discount_rate": 0.1,
-            "discounted_price": 9000.0,
+            "discounted_price": 9000,
             "image": "https://img.freepik.com/free-psd/simple-black-men-s-tee-mockup_53876-57893.jpg?size=338&ext=jpg&ga=GA1.2.1060993109.1605750477",
-            "origin_price": 10000.0,
+            "origin_price": 10000,
             "product_id": 7,
             "product_name": "성보의하루7",
             "seller_id": 4,
@@ -139,7 +139,6 @@ class SellerShopSearchView(MethodView):
             "origin_price": 10000.0,
             "product_id": 5,
             "product_name": "성보의하루5",
-            "product_sales_count": null,
             "seller_id": 4,
             "seller_name": "나는셀러4"
             }]}
@@ -294,9 +293,9 @@ class SellerShopProductListView(MethodView):
             "result": [
                 {
                     "discount_rate": 0.1,
-                    "discounted_price": 9000.0,
+                    "discounted_price": 9000,
                     "image": "https://img.freepik.com/free-psd/simple-black-men-s-tee-mockup_53876-57893.jpg?size=338&ext=jpg&ga=GA1.2.1060993109.1605750477",
-                    "origin_price": 10000.0,
+                    "origin_price": 10000,
                     "product_id": 7,
                     "product_name": "성보의하루7",
                     "seller_id": 4,
@@ -304,9 +303,9 @@ class SellerShopProductListView(MethodView):
                 },
                 {
                     "discount_rate": 0.1,
-                    "discounted_price": 9000.0,
+                    "discounted_price": 9000,
                     "image": "https://img.freepik.com/free-psd/simple-black-men-s-tee-mockup_53876-57893.jpg?size=338&ext=jpg&ga=GA1.2.1060993109.1605750477",
-                    "origin_price": 10000.0,
+                    "origin_price": 10000,
                     "product_id": 5,
                     "product_name": "성보의하루5",
                     "seller_id": 4,

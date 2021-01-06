@@ -89,7 +89,7 @@ class SellerShopDao:
             [
             {
             "discount_rate": 0.1,
-            "discounted_price": 9000.0,
+            "discounted_price": 9000,
             "image": "https://img.freepik.com/free-psd/simple-black-men-s-tee-mockup_53876-57893.jpg?size=338&ext=jpg&ga=GA1.2.1060993109.1605750477",
             "origin_price": 10000.0,
             "product_id": 7,
@@ -99,9 +99,9 @@ class SellerShopDao:
             },
             {
             "discount_rate": 0.1,
-            "discounted_price": 9000.0,
+            "discounted_price": 9000,
             "image": "https://img.freepik.com/free-psd/simple-black-men-s-tee-mockup_53876-57893.jpg?size=338&ext=jpg&ga=GA1.2.1060993109.1605750477",
-            "origin_price": 10000.0,
+            "origin_price": 10000,
             "product_id": 5,
             "product_name": "성보의하루5",
             "seller_id": 4,
@@ -116,7 +116,7 @@ class SellerShopDao:
         History:
             2021-01-02(고수희): 초기 생성
         """
-        # TODO like로 할 경우 성능 저하가 생길 수 있기때문에 다른 선택지를 고려해야함
+        # TODO 검색을 like로 할 경우 성능 저하가 생길 수 있기때문에 다른 선택지를 고려해야함
         sql = """
         SELECT 
         pi.image_url AS image
@@ -130,7 +130,7 @@ class SellerShopDao:
         FROM products AS pd
         INNER JOIN product_images AS pi ON pi.product_id = pd.id AND pi.order_index = 1
         INNER JOIN sellers AS se ON se.account_id = pd.seller_id
-        LEFT JOIN product_sales_volumes AS psv ON psv.product_id = pd.id
+        INNER JOIN product_sales_volumes AS psv ON psv.product_id = pd.id
         WHERE pd.seller_id = %(seller_id)s 
         AND pd.name LIKE %(keyword)s
         AND pd.is_deleted = 0
@@ -227,9 +227,9 @@ class SellerShopDao:
              [
                     {
                         "discount_rate": 0.1,
-                        "discounted_price": 9000.0,
+                        "discounted_price": 9000,
                         "image": "https://img.freepik.com/free-psd/simple-black-men-s-tee-mockup_53876-57893.jpg?size=338&ext=jpg&ga=GA1.2.1060993109.1605750477",
-                        "origin_price": 10000.0,
+                        "origin_price": 10000,
                         "product_id": 7,
                         "product_name": "성보의하루7",
                         "seller_id": 4,
@@ -237,9 +237,9 @@ class SellerShopDao:
                     },
                     {
                         "discount_rate": 0.1,
-                        "discounted_price": 9000.0,
+                        "discounted_price": 9000,
                         "image": "https://img.freepik.com/free-psd/simple-black-men-s-tee-mockup_53876-57893.jpg?size=338&ext=jpg&ga=GA1.2.1060993109.1605750477",
-                        "origin_price": 10000.0,
+                        "origin_price": 10000,
                         "product_id": 5,
                         "product_name": "성보의하루5",
                         "seller_id": 4,
@@ -268,26 +268,20 @@ class SellerShopDao:
         FROM products AS pd
         INNER JOIN product_images AS pi ON pi.product_id = pd.id AND pi.order_index = 1
         INNER JOIN sellers AS se ON se.account_id = pd.seller_id
-        LEFT JOIN product_sales_volumes AS psv ON psv.product_id = pd.id
+        INNER JOIN product_sales_volumes AS psv ON psv.product_id = pd.id
+        WHERE pd.seller_id = %(seller_id)s
         """
 
 
         try:
-            # TODO 쿼리 줄 맞춤
-            # 특정 카테고리를 선택한 경우 : sql에 포함
+            # TODO 쿼리 줄 맞춤 (완료)
+            # 특정 카테고리를 선택한 경우
             if data['category'] is not None:
                 sql += """
-        WHERE pd.main_category_id = %(category)s
-        AND pd.seller_id = %(seller_id)s 
+        AND pd.main_category_id = %(category)s
                 """
 
-            # TODO 하단 정리
-            # 특정 카테고리를 선택하지 않은 경우
-            else:
-                sql +=  """
-        WHERE pd.seller_id = %(seller_id)s
-                """
-
+            # TODO sql로 바꿔서 하단 정리 (완료)
             # 최신순 정렬일 경우
             if data['type'] == "latest":
                 sql += """
@@ -299,7 +293,7 @@ class SellerShopDao:
                 """
 
             # 인기순 정렬일 경우
-            else:
+            if data['type'] == "popular":
                 sql += """
         AND pd.is_deleted = 0
         ORDER BY product_sales_count DESC
