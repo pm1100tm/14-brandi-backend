@@ -132,7 +132,7 @@ class SellerShopDao:
         INNER JOIN sellers AS se ON se.account_id = pd.seller_id
         INNER JOIN product_sales_volumes AS psv ON psv.product_id = pd.id
         WHERE pd.seller_id = %(seller_id)s 
-        AND pd.name LIKE %(keyword)s
+        AND pd.name LIKE %(q)s
         AND pd.is_deleted = 0
         ORDER BY pd.id DESC
         LIMIT %(limit)s
@@ -245,6 +245,7 @@ class SellerShopDao:
                         "seller_id": 4,
                         "seller_name": "나는셀러4"
                     }
+            ]
 
         Raises:
             500, {'message': 'server error',

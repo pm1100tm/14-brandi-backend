@@ -113,9 +113,9 @@ class SellerShopSearchView(MethodView):
     def get(self, *args):
         """ GET 메소드: 해당 셀러의 상품 검색 결과 출력
 
-        keyword에 해당되는 셀러 정보를 테이블에서 조회 후 가져옴
+        q에 해당되는 셀러 정보를 테이블에서 조회 후 가져옴
 
-        Args: args = ('seller_id', 'keyword', 'offset', 'limit')
+        Args: args = ('seller_id', 'q', 'offset', 'limit')
 
         Author: 고수희
 
@@ -157,7 +157,7 @@ class SellerShopSearchView(MethodView):
 
         data = {
             "seller_id": args[0],
-            "keyword": args[1],
+            "q": args[1],
             "offset": args[2],
             "limit": args[3]
         }
