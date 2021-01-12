@@ -11,7 +11,16 @@ from utils.custom_exceptions import (
 
 
 class SellerDao:
+    """ Persistence Layer
 
+        Attributes: None
+
+        Author: 심원두
+
+        History:
+            2021-01-15(심원두): 리펙토링 초기 작성
+    """
+    
     def get_username(self, connection, data):
 
         sql = """
@@ -239,6 +248,47 @@ class SellerDao:
                 raise SellerNotExist('seller does not exist')
 
             return sellers
+    
+    def get_seller_list_by_name(self, connection, data):
+        """셀러 정보 취득 (전후방 일치 검색)
 
+            Args:
+                connection: 데이터베이스 연결 객체
+                data      : 셀러 검색에 사용될 데이터
 
+            Author: 심원두
+
+            Returns:
+                result : sellers 테이블에서 취득한 셀러 정보
+
+            History:
+                2020-12-30(심원두): 초기 생성
+                2020-12-31(심원두): 메세지 수정
+                2021-01-15(심원두):
+                    product_manage_dao 에서 seller_dao 로 이동
+                    메서드명 변경 : search_seller_list >> get_seller_list_by_name
+        """
+        
+        sql = """
+        SELECT
+            account_id         AS 'seller_id'
+            ,`name`            AS 'seller_name'
+            ,profile_image_url AS 'profile_image_url'
+        FROM
+            sellers
+        WHERE
+            is_deleted = 0
+            AND `name` LIKE %(seller_name)s
+        ORDER BY
+            `name`
+        """
+        
+        try:
+            with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+                cursor.execute(sql, data)
+                result = cursor.fetchall()
+                return result
+        
+        except Exception as e:
+            raise e
 

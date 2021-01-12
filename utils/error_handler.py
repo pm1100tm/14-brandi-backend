@@ -18,9 +18,9 @@
         return jsonify({'message': 'type your error message here', 'errorMessage': format(e)}), 500
 """
 
-from flask import jsonify
+from flask                              import jsonify
+from utils.custom_exceptions            import CustomUserError
 from flask_request_validator.exceptions import InvalidRequest
-from utils.custom_exceptions import (CustomUserError)
 
 
 # start error handling
@@ -28,15 +28,15 @@ def error_handle(app):
 
     @app.errorhandler(Exception)
     def handle_internal_server_error(e):
-        return jsonify({'message': 'internal_server_error', 'error_message': format(e)}), 500
+        return jsonify({'message': 'INTERNAL_SERVER_ERROR', 'error_message': format(e)}), 500
 
     @app.errorhandler(KeyError)
     def handle_key_error(e):
-        return jsonify({'message': 'key_error', 'error_message': format(e)}), 400
+        return jsonify({'message': 'KEY_ERROR', 'error_message': format(e)}), 400
 
     @app.errorhandler(NotImplementedError)
     def handle_not_implemented_error(e):
-        return jsonify({'message': 'not_implemented_error', 'error_message': format(e)}), 501
+        return jsonify({'message': 'NOT_IMPLEMENTED_ERROR', 'error_message': format(e)}), 501
 
     # pram customized exception
     @app.errorhandler(InvalidRequest)

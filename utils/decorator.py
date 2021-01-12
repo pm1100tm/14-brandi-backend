@@ -38,7 +38,7 @@ def signin_decorator(required=True):
         def wrapper(*args, **kwargs):
             try:
                 access_token = request.headers.get('Authorization')
-
+                
                 if required and not access_token:
                     raise UnauthorizedUser('로그인이 필요합니다.')
 
