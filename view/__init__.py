@@ -9,7 +9,6 @@ create_endpoints 함수가 정의되어 있는 곳. 함수 안에 사용할 url 
 """
 
 # service
-from .sample_user_view         import SampleUserView
 from .store.user_view          import SignUpView, SignInView, GoogleSocialSignInView
 from .store.product_list_view  import ProductListView, ProductSearchView, ProductDetailView
 from .store.category_list_view import CategoryListView
@@ -31,8 +30,14 @@ from .admin.enquiry_view import EnquiryView, AnswerView
 
 from .admin.seller_view import SellerSignupView, SellerSigninView, SellerInfoView, SellerHistoryView, SellerStatusView, \
     SellerPasswordView, SellerSearchView, SellerListView
-from .admin.product_create_view import MainCategoriesListView, CreateProductView
-from .admin.product_manage_view import ProductManageSearchView, ProductManageDetailView
+from .admin.product_view import (
+    ProductRegistView,
+    ProductCreateGetSellerListView,
+    ProductManageSearchView,
+    ProductManageDetailView,
+    MainCategoriesListView,
+    CreateProductView
+)
 
 
 from utils.error_handler import error_handle
@@ -61,7 +66,6 @@ def create_endpoints(app, services, database):
     """
 
     # service
-    sample_user_service  = services.sample_user_service
     destination_service  = services.destination_service
     cart_item_service    = services.cart_item_service
     sender_service       = services.sender_service
@@ -71,14 +75,12 @@ def create_endpoints(app, services, database):
     seller_service = services.seller_service
 
     # admin1
-    order_service = services.order_service
+    order_service        = services.order_service
     order_detail_service = services.order_detail_service
 
     # admin2
     seller_service         = services.seller_service
     seller_info_service    = services.seller_info_service
-    product_create_service = services.product_create_service
-    product_manage_service = services.product_manage_service
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Service Section(write your code under your name)
@@ -87,14 +89,6 @@ def create_endpoints(app, services, database):
 # ----------------------------------------------------------------------------------------------------------------------
 # 김기용 example ◟( ˘ ³˘)◞ ♡
 # ----------------------------------------------------------------------------------------------------------------------
-    # services 넘겨주기...
-    app.add_url_rule('/test',
-                     view_func=SampleUserView.as_view(
-                         'sample_user_view',
-                         sample_user_service,
-                         database
-                     ))
-
     # product_detail_view
     app.add_url_rule('/products/<product_id>',
                      view_func=ProductDetailView.as_view(
@@ -355,11 +349,6 @@ def create_endpoints(app, services, database):
                          database
                      ))
 
-
-# ----------------------------------------------------------------------------------------------------------------------
-# 이성보 ◟( ˘ ³˘)◞ ♡
-# ----------------------------------------------------------------------------------------------------------------------
-
 # ----------------------------------------------------------------------------------------------------------------------
 # 이성보 ◟( ˘ ³˘)◞ ♡
 # ----------------------------------------------------------------------------------------------------------------------
@@ -410,33 +399,34 @@ def create_endpoints(app, services, database):
 # ----------------------------------------------------------------------------------------------------------------------
 # 심원두 ◟( ˘ ³˘)◞ ♡
 # ----------------------------------------------------------------------------------------------------------------------
-    app.add_url_rule('/admin/product/productRegist/main_category',
-                     view_func=MainCategoriesListView.as_view(
-                         'main_category_list_view',
-                         product_create_service,
-                         database
-                     ))
-    
+    # 상품관리 - 상품 등록 초기 화면 / 셀러 검색 / 서브 카테고리 검색 / 상품 등록
     app.add_url_rule('/admin/product/productRegist',
-                     view_func=CreateProductView.as_view(
-                         'product_create_view',
-                         product_create_service,
+                     view_func=ProductRegistView.as_view(
+                         'product_regist_view',
+                         services.product_manage_service,
                          database
                      ))
     
-    app.add_url_rule('/admin/products',
-                     view_func=ProductManageSearchView.as_view(
-                         'product_manage_search_view',
-                         product_manage_service,
-                         database
-                     ))
-    
-    app.add_url_rule('/admin/products/<string:product_code>',
-                     view_func=ProductManageDetailView.as_view(
-                         'product_manage_detail_view',
-                         product_manage_service,
-                         database
-                     ))
+    # app.add_url_rule('/admin/product/productRegist/main_category',
+    #                  view_func=MainCategoriesListView.as_view(
+    #                      'main_category_list_view',
+    #                      services.product_manage_service,
+    #                      database
+    #                  ))
+    #
+    # app.add_url_rule('/admin/products',
+    #                  view_func=ProductManageSearchView.as_view(
+    #                      'product_manage_search_view',
+    #                      services.product_manage_service,
+    #                      database
+    #                  ))
+    #
+    # app.add_url_rule('/admin/products/<string:product_code>',
+    #                  view_func=ProductManageDetailView.as_view(
+    #                      'product_manage_detail_view',
+    #                      services.product_manage_service,
+    #                      database
+    #                  ))
 
 # ----------------------------------------------------------------------------------------------------------------------
 # 이영주 ◟( ˘ ³˘)◞ ♡
