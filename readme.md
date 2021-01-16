@@ -1,6 +1,6 @@
 # wecode-14-brandi-team-project-backend
 
-![브랜디](.img/brandi_logo.png)
+![브랜디](/img/brandi_logo.png)
 
 # 프로젝트 개요
 여성 온라인 쇼핑몰 [브랜디](https://www.brandi.co.kr/) 의 서비스/어드민 기능 구현 프로젝트.
@@ -11,7 +11,7 @@
 2020/12/14 ~ 2021/01/07
  
 # 모델링
-![브랜디](.img/brandi-project-modeling.png)
+![모델링 보러 가기](/img/brandi-project-modeling.png)
 
 [자세한 링크는 이곳을 클릭해주세요]()
 
