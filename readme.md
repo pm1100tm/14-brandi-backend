@@ -58,21 +58,10 @@
 | SERVICE  | checkout   | 배송지 정보 상세 조회             | 김기용    |
 | SERVICE  | checkout   | 배송지 정보 수정                 | 김기용    |
 | SERVICE  | checkout   | 배송지 정보 삭제                 | 김기용    |
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+| SERVICE  | mypage   | 주문 정보 리스트 조회 | 김기용    |
+| SERVICE  | mypage   | 주문 정보 상세 조회   | 김기용    |
+| SERVICE  | mypage   | 주문 취소/ 구매 확정  | 김기용    |
+| SERVICE  | mypage   | QA 리스트 조회       | 김기용    |
 
 
 
