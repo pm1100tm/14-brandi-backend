@@ -182,7 +182,7 @@ class ProductManageService:
         except Exception as e:
             raise e
 
-    def get_seller_list_by_name_service(self, connection, data, permission_type_id):
+    def get_seller_list_by_name_service(self, connection, data):
         """ 셀러 리스트 취득
 
             Args:
@@ -219,7 +219,7 @@ class ProductManageService:
         """
         
         try:
-            if permission_type_id is not ACCOUNT_ADMIN:
+            if data['permission_type_id'] is not ACCOUNT_ADMIN:
                 raise PermissionError('PERMISSION_ERROR')
             
             data['seller_name'] = '%' + data['seller_name'] + '%'

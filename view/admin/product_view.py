@@ -22,10 +22,13 @@ class ProductRegistView(MethodView):
         Author: 심원두
 
         History:
+            2020-12-29(심원두): 초기 생성. products insert, product_code updated, product_histories 생성 기능 작성
+            2020-12-30(심원두): 각 Param rules 추가, stock insert 기능 작성.
+            2020-01-03(심원두): 상품 등록 Param rules 추가
             2021-01-13(심원두): refactoring 초기 작성
             2021-01-15(심원두):
                 상품 등록 초기 화면 기능 작성 완료. 권한 타입 상수 생성. 권한에 따른 분기 처리 완료.
-                파라미터 룰 설정 완료
+                파라미터 유효성 검증을 위한 RULE 설정 완료.
     """
     
     def __init__(self, service, database):
@@ -57,15 +60,29 @@ class ProductRegistView(MethodView):
                     5. 셀러 권한 초기화면               - 원산지, 색상, 사이즈, 메인 카테고리 정보 출력
                     
             Raises:
-                500, {'message': 'fail to get main category list',
-                      'errorMessage': 'fail_to_get_main_category_list'}: 메인 카테고리 정보 취득 실패
+                
+                400, {'message': 'internal_server_error',
+                      'errorMessage': 'PERMISSION_ERROR' + format(e)}: 잘못된 권한
                 
                 500, {'message': 'fail to get main category list',
                       'errorMessage': 'fail_to_get_main_category_list'}: 메인 카테고리 정보 취득 실패
+                      
+                500, {'message': 'fail to get sub category list',
+                      'errorMessage': 'fail_to_get_sub_category_list'}: 색상 정보 취득 실패
+                
+                500, {'message': 'fail to get color list',
+                      'errorMessage': 'fail_to_get_color_list'}: 색상 정보 취득 실패
+                
+                500, {'message': 'fail to get size list',
+                      'errorMessage': 'fail_to_get_size_list'}: 색상 정보 취득 실패
+                
+                500, {'message': 'fail to get product origin types',
+                      'errorMessage': 'fail_to_get_product_origin_types'} : 원산지 정보 취득 실패
             
             History:
                 2020-12-30(심원두): 초기생성
-                2021-01-15(심원두): 리펙토링 완료
+                2021-01-06(심원두): 로그인 데코레이터 처리 추가
+                2021-01-15(심원두): 관리자/셀러 권한별 기능 분기 처리
         """
         
         connection = None
@@ -77,6 +94,7 @@ class ProductRegistView(MethodView):
                 'seller_name'        : request.args.get('seller_name'),
                 'seller_id'          : request.args.get('seller_id'),
                 'main_category_id'   : request.args.get('main_category_id'),
+                'permission_type_id' : g.permission_type_id
             }
             
             result = dict()
@@ -85,8 +103,7 @@ class ProductRegistView(MethodView):
                 result['seller_list'] = self.service.\
                     get_seller_list_by_name_service(
                         connection,
-                        data,
-                        g.permission_type_id
+                        data
                     )
                 
                 return jsonify({'message': 'success', 'result': result}), 200
@@ -96,9 +113,6 @@ class ProductRegistView(MethodView):
                     get_main_category_list_service(
                         connection
                     )
-                
-                if g.permission_type_id is ACCOUNT_ADMIN:
-                    return jsonify({'message': 'success', 'result': result}), 200
             
             if data['main_category_id']:
                 result['sub_category_list'] = self.service. \
@@ -128,280 +142,67 @@ class ProductRegistView(MethodView):
                 if connection:
                     connection.close()
             except Exception:
-                raise DatabaseCloseFail('database close fail')
-
-
-class ProductCreateGetSellerListView(MethodView):
-    def __init__(self, service, database):
-        self.service = service
-        self.database = database
+                raise DatabaseCloseFail('DATABASE_CLOSE_FAIL')
     
     @signin_decorator()
     @validate_params(
-        Param('seller_name', GET, str, required=True, rules=[MaxLength(20)]),
-    )
-    def get(self, *args):
-        try:
-            data = {
-                'seller_name'        : request.args.get('seller_name'),
-                'permission_type_id' : g.permission_type_id
-            }
-            
-            connection = get_connection(self.database)
-            
-            sellers = dict()
-            
-            if data['seller_name'] and g.permission_type_id == 1:
-                sellers = self.service.search_seller_list_service(
-                    connection,
-                    data
-                )
-            
-            return jsonify({'message': 'success', 'result': sellers})
-        
-        except Exception as e:
-            traceback.print_exc()
-            raise e
-        
-        finally:
-            try:
-                if connection:
-                    connection.close()
-            except Exception:
-                raise DatabaseCloseFail('database close fail')
-
-
-class MainCategoriesListView(MethodView):
-    """ Presentation Layer
-
-        Attributes:
-            service  : MainCategoryListService 클래스
-            database : app.config['DB']에 담겨있는 정보(데이터베이스 관련 정보)
-
-        Author: 심원두
-
-        History:
-            2020-12-30(심원두): 초기 작성
-    """
-    
-    def __init__(self, service, database):
-        self.service = service
-        self.database = database
-    
-    @signin_decorator()
-    def get(self):
-        """GET 메소드: 상품 정보 등록에 필요한 메인 카테고리 리스트 취득
-
-            Args: None
-
-            Author: 심원두
-
-            Returns:
-                result - 메인 카테고리 리스트
-
-            Raises:
-                500, {'message': 'fail to get main category list',
-                      'errorMessage': 'fail_to_get_main_category_list'}: 메인 카테고리 정보 취득 실패
-            
-            History:
-                2020-12-30(심원두): 초기생성
-        """
-        try:
-            connection = get_connection(self.database)
-            result = self.service.main_category_list_service(connection)
-            
-            return jsonify({'message': 'success', 'result': result})
-        
-        except KeyError as e:
-            traceback.print_exc()
-            raise e
-        
-        except Exception as e:
-            traceback.print_exc()
-            raise e
-        
-        finally:
-            try:
-                if connection:
-                    connection.close()
-            except Exception:
-                raise DatabaseCloseFail('database close fail')
-
-
-class CreateProductView(MethodView):
-    """ Presentation Layer
-
-        Attributes:
-            service  : CreateProductService 클래스
-            database : app.config['DB']에 담겨있는 정보(데이터베이스 관련 정보)
-
-        Author: 심원두
-
-        History:
-            2020-12-29(심원두): 초기 생성. products insert, product_code updated, product_histories 생성 기능 작성
-            2020-12-30(심원두): 각 Param rules 추가, stock insert 기능 작성.
-            2020-01-03(심원두): 상품 등록 Param rules 추가
-    """
-    
-    def __init__(self, service, database):
-        self.service = service
-        self.database = database
-    
-    @signin_decorator()
-    @validate_params(
-        Param('seller_name', GET, str, required=False, rules=[MaxLength(20)]),
-        Param('main_category_id', GET, str, required=False, rules=[NumberRule()])
-    )
-    def get(self, *args):
-        """POST 메소드: 상품 정보 등록 초기 화면
-
-            Args:
-                'seller_name'      : 사용자가 입력한 셀러명
-                'main_category_id' : 사용자가 선택한 메인 카테고리 아이디
-
-            Author: 심원두
-
-            Returns:
-                return {"message": "success", "result": [{}]}
-
-            Raises:
-                400, {'message': 'key error',
-                      'errorMessage': 'key_error' + format(e)}: 잘못 입력된 키값
-
-                500, {'message': 'fail to get sub category list',
-                      'errorMessage': 'fail_to_get_sub_category_list'}: 색상 정보 취득 실패
-
-                500, {'message': 'fail to get product origin types',
-                      'errorMessage': 'fail_to_get_product_origin_types'} : 원산지 정보 취득 실패
-
-                500, {'message': 'fail to get color list',
-                      'errorMessage': 'fail_to_get_color_list'}: 색상 정보 취득 실패
-
-                500, {'message': 'fail to get color list',
-                      'errorMessage': 'fail_to_get_color_list'}: 색상 정보 취득 실패
-
-            History:
-                2020-12-30(심원두): 초기생성
-                2021-01-06(심원두): 로그인 데코레이터 처리 추가. 관리자일 경우에만 셀러 검색 허용하도록 수정
-        """
-        
-        try:
-            data = {
-                'seller_name'     : request.args.get('seller_name', None),
-                'main_category_id': request.args.get('main_category_id', None)
-            }
-            
-            connection = get_connection(self.database)
-            
-            if data['seller_name'] and g.permission_type_id == 1:
-                sellers = self.service.search_seller_list_service(
-                    connection,
-                    data
-                )
-                
-                return jsonify({'message': 'success', 'result': sellers})
-            
-            if data['main_category_id']:
-                sub_categories = self.service.get_sub_category_list_service(
-                    connection,
-                    data
-                )
-                
-                return jsonify({'message': 'success', 'result': sub_categories})
-            
-            result = dict()
-            
-            result['product_origin_types'] = \
-                self.service.get_product_origin_types_service(
-                    connection
-                )
-            
-            result['color_list'] = \
-                self.service.get_color_list_service(
-                    connection
-                )
-            
-            result['size_list'] = \
-                self.service.get_size_list_service(
-                    connection
-                )
-            
-            return jsonify({'message': 'success', 'result': result})
-        
-        except KeyError as e:
-            traceback.print_exc()
-            raise e
-        
-        except Exception as e:
-            traceback.print_exc()
-            raise e
-        
-        finally:
-            try:
-                if connection:
-                    connection.close()
-            except Exception:
-                raise DatabaseCloseFail('database close fail')
-    
-    @signin_decorator()
-    @validate_params(
-        Param('seller_id', FORM, str, required=True, rules=[NumberRule()]),
-        Param('is_sale', FORM, int, required=True, rules=[Enum(0, 1)]),
-        Param('is_display', FORM, int, required=True, rules=[Enum(0, 1)]),
-        Param('main_category_id', FORM, str, required=True, rules=[NumberRule()]),
-        Param('sub_category_id', FORM, str, required=True, rules=[NumberRule()]),
-        Param('is_product_notice', FORM, int, required=True, rules=[Enum(0, 1)]),
-        Param('manufacturer', FORM, str, required=False, rules=[MaxLength(30)]),
-        Param('manufacturing_date', FORM, str, required=False),
-        Param('product_origin_type_id', FORM, str, required=False),
-        Param('product_name', FORM, str, required=True, rules=[NotEmpty(), MaxLength(100)]),
-        Param('description', FORM, str, required=False, rules=[MaxLength(200)]),
-        Param('detail_information', FORM, str, required=True, rules=[NotEmpty()]),
-        Param('options', FORM, list, required=True),
-        Param('minimum_quantity', FORM, str, required=False, rules=[NumberRule()]),
-        Param('maximum_quantity', FORM, str, required=False, rules=[NumberRule()]),
-        Param('origin_price', FORM, str, required=True, rules=[NumberRule()]),
-        Param('discount_rate', FORM, str, required=True, rules=[NumberRule()]),
-        Param('discounted_price', FORM, str, required=True, rules=[NumberRule()]),
-        Param('discount_start_date', FORM, str, required=False),
-        Param('discount_end_date', FORM, str, required=False)
+        Param('seller_id'             , FORM, str , required = True  , rules = [NumberRule()]),
+        Param('is_sale'               , FORM, bool , required = True  , rules = [Enum(0          , 1)]),
+        Param('is_display'            , FORM, bool , required = True  , rules = [Enum(0          , 1)]),
+        Param('main_category_id'      , FORM, str , required = True  , rules = [NumberRule()]),
+        Param('sub_category_id'       , FORM, str , required = True  , rules = [NumberRule()]),
+        Param('is_product_notice'     , FORM, bool , required = True  , rules = [Enum(0          , 1)]),
+        Param('manufacturer'          , FORM, str , required = False , rules = [MaxLength(30)]),
+        Param('manufacturing_date'    , FORM, str , required = False),
+        Param('product_origin_type_id', FORM, str , required = False),
+        Param('product_name'          , FORM, str , required = True  , rules = [NotEmpty()      , MaxLength(100)]),
+        Param('description'           , FORM, str , required = False , rules = [MaxLength(200)]),
+        Param('detail_information'    , FORM, str , required = True  , rules = [NotEmpty()]),
+        Param('options'               , FORM, list, required = True),
+        Param('minimum_quantity'      , FORM, str , required = False , rules = [NumberRule()]),
+        Param('maximum_quantity'      , FORM, str , required = False , rules = [NumberRule()]),
+        Param('origin_price'          , FORM, str , required = True  , rules = [NumberRule()]),
+        Param('is_discount'           , FORM, str, required=True, rules=[NumberRule()]),
+        Param('discount_rate'         , FORM, str , required = True  , rules = [NumberRule()]),
+        Param('discounted_price'      , FORM, str , required = True  , rules = [NumberRule()]),
+        Param('discount_start_date'   , FORM, str , required = False),
+        Param('discount_end_date'     , FORM, str , required = False)
     )
     def post(self, *args):
         """ POST 메소드: 상품 정보 등록
-
+            
             Args:
             - 사용자 입력 값(상품 이미지 최대 5개) : image_files
             - 사용자 입력 값(옵션 정보 리스트)    : options
             - 사용자 입력 값
             Form-Data: (
                 'seller_id'
-                'account_id',
-                'is_sale',
-                'is_display',
-                'main_category_id',
-                'sub_category_id',
-                'is_product_notice',
-                'manufacturer',
-                'manufacturing_date',
-                'product_origin_type_id',
-                'product_name',
-                'description',
-                'detail_information',
-                'options',
-                'minimum_quantity',
-                'maximum_quantity',
-                'origin_price',
-                'discount_rate',
-                'discounted_price',
-                'discount_start_date',
-                'discount_end_date',
+                'is_sale'
+                'is_display'
+                'main_category_id'
+                'sub_category_id'
+                'is_product_notice'
+                'manufacturer'
+                'manufacturing_date'
+                'product_origin_type_id'
+                'product_name'
+                'description'
+                'detail_information'
+                'options'
+                'minimum_quantity'
+                'maximum_quantity'
+                'origin_price'
+                'discount_rate'
+                'discounted_price'
+                'discount_start_date'
+                'discount_end_date'
             )
-
+            
             Author: 심원두
-
+            
             Returns:
-                200, {'message': 'success'}                                                   : 상품 정보 등록 성공
-
+                201, {'message': 'success'}                                                   : 상품 정보 등록 성공
+            
             Raises:
                 400, {'message': 'key_error',
                       'errorMessage': 'key_error_' + format(e)}                               : 잘못 입력된 키값
@@ -474,7 +275,7 @@ class CreateProductView(MethodView):
 
                 500, {'message': 'internal_server_error',
                       'errorMessage': format(e)})                                             : 서버 에러
-
+            
             History:
                 2020-12-29(심원두): 초기 생성
                 2021-01-03(심원두): 파라미터 유효성 검사 추가 Enum(), NotEmpty()
@@ -508,8 +309,8 @@ class CreateProductView(MethodView):
             }
             
             product_images = request.files.getlist("image_files")
-            stocks = json.loads(request.form.get('options'))
-            connection = get_connection(self.database)
+            stocks         = json.loads(request.form.get('options'))
+            connection     = get_connection(self.database)
             
             product_id = self.service.create_product_service(
                 connection,
@@ -553,18 +354,18 @@ class CreateProductView(MethodView):
             
             connection.commit()
             
-            return jsonify({'message': 'success'}), 200
-        
+            return jsonify({'message': 'success'}), 201
+            
         except KeyError as e:
             traceback.print_exc()
             connection.rollback()
             raise e
-        
+    
         except Exception as e:
             traceback.print_exc()
             connection.rollback()
             raise e
-        
+    
         finally:
             try:
                 if connection:
@@ -573,7 +374,7 @@ class CreateProductView(MethodView):
                 traceback.print_exc()
                 raise DatabaseCloseFail('database close fail')
 
-
+            
 class ProductManageSearchView(MethodView):
     """ Presentation Layer
 

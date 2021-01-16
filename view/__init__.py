@@ -399,7 +399,9 @@ def create_endpoints(app, services, database):
 # ----------------------------------------------------------------------------------------------------------------------
 # 심원두 ◟( ˘ ³˘)◞ ♡
 # ----------------------------------------------------------------------------------------------------------------------
-    # 상품관리 - 상품 등록 초기 화면 / 셀러 검색 / 서브 카테고리 검색 / 상품 등록
+    # 상품관리
+    # GET - 상품 등록 초기 화면 / 셀러 검색 / 서브 카테고리 검색
+    # POST - 상품 등록
     app.add_url_rule('/admin/product/productRegist',
                      view_func=ProductRegistView.as_view(
                          'product_regist_view',
@@ -407,13 +409,6 @@ def create_endpoints(app, services, database):
                          database
                      ))
     
-    # app.add_url_rule('/admin/product/productRegist/main_category',
-    #                  view_func=MainCategoriesListView.as_view(
-    #                      'main_category_list_view',
-    #                      services.product_manage_service,
-    #                      database
-    #                  ))
-    #
     # app.add_url_rule('/admin/products',
     #                  view_func=ProductManageSearchView.as_view(
     #                      'product_manage_search_view',

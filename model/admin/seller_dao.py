@@ -260,7 +260,9 @@ class SellerDao:
 
             Returns:
                 result : sellers 테이블에서 취득한 셀러 정보
-
+            
+            Raises: -
+            
             History:
                 2020-12-30(심원두): 초기 생성
                 2020-12-31(심원두): 메세지 수정
