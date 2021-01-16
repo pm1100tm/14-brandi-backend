@@ -14,9 +14,7 @@
 * 총 12인 (프론트엔드 3인, 백엔드 9인)
 
 ### 3. 모델링
-[모델링 보러 가기](https://aquerytool.com:443/aquerymain/index/?rurl=0887ed6d-54f3-4ce7-a4be-ca4cd385cc77)
-
-***비밀번호 : 8sc484***
+[모델링 보러 가기](https://aquerytool.com:443/aquerymain/index/?rurl=0887ed6d-54f3-4ce7-a4be-ca4cd385cc77) ***8sc484***
 
 ### 4. 사용한 기술 스택
 + Frontend
@@ -32,20 +30,32 @@
 
 # 구현 기능 및 담당자
 
-|구분          | 앱 이름       | API 설명            | 담당자   |
-|:------------|:-------------|:-------------------|:--------|
-| SERVICE     | user         | 회원가입             | 김민구     |
-| SERVICE     | user         | 로그인               | 김민구     |
-| SERVICE     | user         | 소셜 로그인           | 김민구     |
-| SERVICE     | product      | 메인 상품 카테고리 출력 | 김민구     |
-| SERVICE     | product      | 메인 상품 리스트       | 김민구     |
-| SERVICE     | product      | 상품 검색             | 김기용     |
-| SERVICE     | product      | 상품 상세 정보 조회     | 김기용    |
-| SERVICE     | product      | 상품 Q&A 리스트 조회   | 김민구     |
-| SERVICE     | product      | 상품 Q&A 작성         | 김기용     |
-| SERVICE     | product      | 상품 Q&A 삭제         | 김기용    |
-
-
+|구분       | 앱 이름     | API 설명             | 담당자   |
+|:---------|:-----------|:--------------------|:--------|
+| SERVICE  | user       | 회원가입              | 김민구     |
+| SERVICE  | user       | 로그인               | 김민구     |
+| SERVICE  | user       | 소셜 로그인           | 김민구     |
+| SERVICE  | product    | 메인 상품 카테고리 출력 | 김민구     |
+| SERVICE  | product    | 메인 상품 리스트       | 김민구     |
+| SERVICE  | product    | 상품 검색             | 김기용     |
+| SERVICE  | product    | 상품 상세 정보 조회    | 김기용    |
+| SERVICE  | product    | 상품 Q&A 리스트 조회   | 김민구     |
+| SERVICE  | product    | 상품 Q&A 작성         | 김민구     |
+| SERVICE  | product    | 상품 Q&A 삭제         | 김민구    |
+| SERVICE  | shop       | 셀러 상품 리스트()    | 고수희    |
+| SERVICE  | shop       | 셀러 카테고리         | 고수희    |
+| SERVICE  | shop       | 셀러 상품 검색        | 고수희    |
+| SERVICE  | shop       | 셀러 정보 조회        | 고수희    |
+| SERVICE  | checkout   | [바로구매] 장바구니 상품 추가        | 고수희    |
+| SERVICE  | checkout   | [바로구매] 장바구니 상품 조회        | 고수희    |
+| SERVICE  | checkout   | [바로구매] 상품 결제 추가           | 고수희    |
+| SERVICE  | checkout   | [바로구매] 상품 결제 완료 결과 조회   | 고수희    |
+| SERVICE  | checkout   | 주문자 정보 조회                  | 고수희    |
+| SERVICE  | checkout   | 배송지 정보 생성                  | 김기용    |
+| SERVICE  | checkout   | 회원의 배송지 정보 조회            | 김기용    |
+| SERVICE  | checkout   | 배송지 정보 상세 조회             | 김기용    |
+| SERVICE  | checkout   | 배송지 정보 수정                 | 김기용    |
+| SERVICE  | checkout   | 배송지 정보 삭제                 | 김기용    |
 
 
 
