@@ -28,6 +28,8 @@
     - Flask Framework
     - AWS (Amazon S3)
 
+<br>
+
 # 구현 기능 및 담당자
 
 |구분       | 앱 이름     | API 설명             | 담당자   |
