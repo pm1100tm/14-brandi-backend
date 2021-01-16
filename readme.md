@@ -11,12 +11,19 @@
 * 서비스 - 실제 유저가 웹사이트에 들어와 상품을 보고 구매를 진행하는 등의 기능.
 * 어드민 - 관리자 기능으로써 회원관리(유저, 셀러, 관리자)와 상품 관리 및 결제 완료 후의 과정에 대한 기능.
 
+<br>
+
 ### 프로젝트 기간 
 * 2020/12/14 ~ 2021/01/07
 
-### 모델링
+<br>
 
-* ![모델링 보러 가기](/img/brandi-project-modeling.png)
+### 모델링
+* ![모델링](/img/brandi-project-modeling.png)
+* [모델링 보러 가기](https://aquerytool.com:443/aquerymain/index/?rurl=0887ed6d-54f3-4ce7-a4be-ca4cd385cc77)
+* 비밀번호 : 8sc484
+
+<br>
 
 ### 사용한 기술 스택
 + Frontend
