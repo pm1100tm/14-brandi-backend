@@ -379,4 +379,3 @@ __pycache__/
 *.log
 *.csv
 test.py
-img/

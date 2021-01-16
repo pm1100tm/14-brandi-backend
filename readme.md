@@ -11,7 +11,7 @@
 2020/12/14 ~ 2021/01/07
  
 # 모델링
-![브랜디](.img/brandi_logo.png)
+![브랜디](.img/brandi-project-modeling.png)
 
 [자세한 링크는 이곳을 클릭해주세요]()
 
