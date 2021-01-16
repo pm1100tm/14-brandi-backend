@@ -14,7 +14,7 @@
 * 총 12인 (프론트엔드 3인, 백엔드 9인)
 
 ### 3. 모델링
-[모델링 보러 가기](https://aquerytool.com:443/aquerymain/index/?rurl=0887ed6d-54f3-4ce7-a4be-ca4cd385cc77) ***8sc484***
+[모델링 보러 가기](https://aquerytool.com:443/aquerymain/index/?rurl=0887ed6d-54f3-4ce7-a4be-ca4cd385cc77) : password (***8sc484***)
 
 ### 4. 사용한 기술 스택
 + Frontend
@@ -62,6 +62,63 @@
 | SERVICE  | mypage   | 주문 정보 상세 조회   | 김기용    |
 | SERVICE  | mypage   | 주문 취소/ 구매 확정  | 김기용    |
 | SERVICE  | mypage   | QA 리스트 조회       | 김기용    |
+| SERVICE  | event | 기획전 베너 리스트 조회     | 김민구    |
+| SERVICE  | event | 기획전 상세 정보 조회       | 김민구    |
+| SERVICE  | event | 기획전 상세 버튼 리스트 조회 | 김민구    |
+| SERVICE  | event | 기획전 상세 상품 리스트 조회 | 김민구    |
+| SERVICE  | event | 상품 북마크 추가           | 김민구    |
+| SERVICE  | event | 상품 북마크 삭제           | 김민구    |
+| ADMIN  | dashboard | 관리자 카테고리 출력     | 김영환    |
+| ADMIN  | seller    | 셀러 회원가입           | 김영환    |
+| ADMIN  | seller    | 셀러 로그인            | 김영환    |
+| ADMIN  | seller    | 셀러 계정 리스트        | 김영환    |
+| ADMIN  | seller    | 셀러 계정 상세 정보     | 이영주    |
+| ADMIN  | seller    | 셀러 계정 상세 정보 변경 | 이영주    |
+| ADMIN  | seller    | 셀러 검색              | 김영환    |
+| ADMIN  | seller    | 셀러 상태 변경          | 이영주    |
+| ADMIN  | seller    | 셀러 비밀번호 변경       | 이영주    |
+| ADMIN  | seller    | 셀러 상세 히스토리 조회   | 이영주    |
+| ADMIN  | seller | 엑셀 다운로드           | 장재원    |
+| ADMIN  | product | 상품 등록 초기화면     | 심원두   |
+| ADMIN  | product | 상품 등록            | 심원두    |
+| ADMIN  | product | 상품 상세 정보 조회    | 심원두    |
+| ADMIN  | product | 상품 상세 정보 수정    | 심원두    |
+| ADMIN  | product | 상품 정보 리스트(검색) | 심원두    |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
