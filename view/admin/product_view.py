@@ -6,7 +6,6 @@ from flask_request_validator.rules  import NotEmpty
 from flask_request_validator        import Param, GET, PATH, FORM, Enum, MaxLength, validate_params
 
 from utils.connection               import get_connection
-from utils.const                    import ACCOUNT_ADMIN
 from utils.custom_exceptions        import DatabaseCloseFail
 from utils.decorator                import signin_decorator
 from utils.rules                    import NumberRule, PageRule, DateRule, DefaultRule
@@ -146,57 +145,59 @@ class ProductRegistView(MethodView):
     
     @signin_decorator()
     @validate_params(
-        Param('seller_id'             , FORM, str , required = True  , rules = [NumberRule()]),
-        Param('is_sale'               , FORM, bool , required = True  , rules = [Enum(0          , 1)]),
-        Param('is_display'            , FORM, bool , required = True  , rules = [Enum(0          , 1)]),
-        Param('main_category_id'      , FORM, str , required = True  , rules = [NumberRule()]),
-        Param('sub_category_id'       , FORM, str , required = True  , rules = [NumberRule()]),
-        Param('is_product_notice'     , FORM, bool , required = True  , rules = [Enum(0          , 1)]),
-        Param('manufacturer'          , FORM, str , required = False , rules = [MaxLength(30)]),
-        Param('manufacturing_date'    , FORM, str , required = False),
-        Param('product_origin_type_id', FORM, str , required = False),
-        Param('product_name'          , FORM, str , required = True  , rules = [NotEmpty()      , MaxLength(100)]),
-        Param('description'           , FORM, str , required = False , rules = [MaxLength(200)]),
-        Param('detail_information'    , FORM, str , required = True  , rules = [NotEmpty()]),
-        Param('options'               , FORM, list, required = True),
-        Param('minimum_quantity'      , FORM, str , required = False , rules = [NumberRule()]),
-        Param('maximum_quantity'      , FORM, str , required = False , rules = [NumberRule()]),
-        Param('origin_price'          , FORM, str , required = True  , rules = [NumberRule()]),
-        Param('is_discount'           , FORM, str, required=True, rules=[NumberRule()]),
-        Param('discount_rate'         , FORM, str , required = True  , rules = [NumberRule()]),
-        Param('discounted_price'      , FORM, str , required = True  , rules = [NumberRule()]),
-        Param('discount_start_date'   , FORM, str , required = False),
-        Param('discount_end_date'     , FORM, str , required = False)
+        Param('seller_id'             , FORM, str, required=True,  rules=[NumberRule()]),
+        Param('is_sale'               , FORM, int, required=True,  rules=[Enum(0, 1)]),
+        Param('is_display'            , FORM, int, required=True,  rules=[Enum(0, 1)]),
+        Param('main_category_id'      , FORM, str, required=True,  rules=[NumberRule()]),
+        Param('sub_category_id'       , FORM, str, required=True,  rules=[NumberRule()]),
+        Param('is_product_notice'     , FORM, int, required=True,  rules=[Enum(0, 1)]),
+        Param('manufacturer'          , FORM, str, required=False, rules=[MaxLength(30)]),
+        Param('manufacturing_date'    , FORM, str, required=False, rules=[MaxLength(10)]),
+        Param('product_origin_type_id', FORM, int, required=False),
+        Param('product_name'          , FORM, str, required=True,  rules=[NotEmpty(), MaxLength(100)]),
+        Param('description'           , FORM, str, required=False, rules=[NotEmpty(), MaxLength(200)]),
+        Param('detail_information'    , FORM, str, required=True,  rules=[NotEmpty()]),
+        Param('is_minimum_sale_one'   , FORM, int, required=True,  rules=[Enum(0, 1)]),
+        Param('minimum_sale_quantity' , FORM, str, required=False, rules=[NumberRule()]),
+        Param('is_maximum_sale_one'   , FORM, int, required=True,  rules=[Enum(0, 1)]),
+        Param('maximum_sale_quantity' , FORM, str, required=False, rules=[NumberRule()]),
+        Param('origin_price'          , FORM, str, required=True,  rules=[NumberRule()]),
+        Param('is_discount'           , FORM, int, required=True,  rules=[Enum(0, 1)]),
+        Param('discount_rate'         , FORM, str, required=True,  rules=[NumberRule()]),
+        Param('discounted_price'      , FORM, str, required=True,  rules=[NumberRule()]),
+        Param('discount_start_date'   , FORM, str, required=False),
+        Param('discount_end_date'     , FORM, str, required=False)
     )
     def post(self, *args):
         """ POST 메소드: 상품 정보 등록
             
             Args:
-            - 사용자 입력 값(상품 이미지 최대 5개) : image_files
-            - 사용자 입력 값(옵션 정보 리스트)    : options
-            - 사용자 입력 값
-            Form-Data: (
-                'seller_id'
-                'is_sale'
-                'is_display'
-                'main_category_id'
-                'sub_category_id'
-                'is_product_notice'
-                'manufacturer'
-                'manufacturing_date'
-                'product_origin_type_id'
-                'product_name'
-                'description'
-                'detail_information'
-                'options'
-                'minimum_quantity'
-                'maximum_quantity'
-                'origin_price'
-                'discount_rate'
-                'discounted_price'
-                'discount_start_date'
-                'discount_end_date'
-            )
+                Form-Data: (
+                    'seller_id'              셀러 아이디
+                    'is_sale'                판매 여부
+                    'is_display'             진열 여부
+                    'main_category_id'       메인 카테고리 아이디
+                    'sub_category_id'        서브 카테고리 아이디
+                    'is_product_notice'      상품 고시 여부
+                    'manufacturer'           제조사
+                    'manufacturing_date'     제조일자
+                    'product_origin_type_id' 원산지 아이디
+                    'product_name'           상품명
+                    'description'            상품 한 줄 설명
+                    'detail_information'     HTML
+                    'is_minimum_sale_one'    최소 판매 수량 1개 이상
+                    'minimum_sale_quantity'  최소 판매 수량
+                    'is_maximum_sale_one'    최대 판매 수량 1개 이상
+                    'maximum_sale_quantity'  최대 판매 수량
+                    'origin_price'           판매가
+                    'is_discount'            할인 여부
+                    'discount_rate'          할인율
+                    'discounted_price'       할인 적용 가격
+                    'discount_start_date'    할인 시작일자
+                    'discount_end_date'      할인 종료일자
+                    'options'                상품 옵션 정보 리스트
+                    'image_files'            상품 이미지 리스트 (최대 5개)
+                )
             
             Author: 심원두
             
@@ -286,26 +287,29 @@ class ProductRegistView(MethodView):
         
         try:
             data = {
-                'seller_id'             : request.form.get('seller_id'),
-                'account_id'            : g.account_id,
-                'is_sale'               : request.form.get('is_sale'),
-                'is_display'            : request.form.get('is_display'),
-                'main_category_id'      : request.form.get('main_category_id'),
-                'sub_category_id'       : request.form.get('sub_category_id'),
-                'is_product_notice'     : request.form.get('is_product_notice'),
-                'manufacturer'          : request.form.get('manufacturer'),
-                'manufacturing_date'    : request.form.get('manufacturing_date'),
-                'product_origin_type_id': request.form.get('product_origin_type_id'),
-                'product_name'          : request.form.get('product_name'),
-                'description'           : request.form.get('description'),
-                'detail_information'    : request.form.get('detail_information'),
-                'minimum_quantity'      : request.form.get('minimum_quantity'),
-                'maximum_quantity'      : request.form.get('maximum_quantity'),
-                'origin_price'          : request.form.get('origin_price'),
-                'discount_rate'         : request.form.get('discount_rate'),
-                'discounted_price'      : request.form.get('discounted_price'),
-                'discount_start_date'   : request.form.get('discount_start_date'),
-                'discount_end_date'     : request.form.get('discount_end_date')
+                'seller_id'              : request.form.get('seller_id'),
+                'account_id'             : g.account_id,
+                'is_sale'                : request.form.get('is_sale'),
+                'is_display'             : request.form.get('is_display'),
+                'main_category_id'       : request.form.get('main_category_id'),
+                'sub_category_id'        : request.form.get('sub_category_id'),
+                'is_product_notice'      : request.form.get('is_product_notice'),
+                'manufacturer'           : request.form.get('manufacturer'),
+                'manufacturing_date'     : request.form.get('manufacturing_date'),
+                'product_origin_type_id' : request.form.get('product_origin_type_id'),
+                'product_name'           : request.form.get('product_name'),
+                'description'            : request.form.get('description'),
+                'detail_information'     : request.form.get('detail_information'),
+                'is_minimum_sale_one'    : request.form.get('is_minimum_sale_one'),
+                'minimum_sale_quantity'  : request.form.get('minimum_sale_quantity'),
+                'is_maximum_sale_one'    : request.form.get('is_maximum_sale_one'),
+                'maximum_sale_quantity'  : request.form.get('maximum_sale_quantity'),
+                'origin_price'           : request.form.get('origin_price'),
+                'is_discount'            : request.form.get('is_discount'),
+                'discount_rate'          : request.form.get('discount_rate'),
+                'discounted_price'       : request.form.get('discounted_price'),
+                'discount_start_date'    : request.form.get('discount_start_date'),
+                'discount_end_date'      : request.form.get('discount_end_date')
             }
             
             product_images = request.files.getlist("image_files")
@@ -317,42 +321,42 @@ class ProductRegistView(MethodView):
                 data
             )
             
-            product_code = self.service.update_product_code_service(
-                connection,
-                product_id
-            )
-            
-            self.service.create_stock_service(
-                connection,
-                product_id,
-                stocks
-            )
-            
-            self.service.create_product_history_service(
-                connection,
-                product_id,
-                data
-            )
-            
-            self.service.create_product_sales_volumes_service(
-                connection,
-                product_id
-            )
-            
-            self.service.create_bookmark_volumes_service(
-                connection,
-                product_id
-            )
-            
-            self.service.create_product_images_service(
-                connection,
-                data['seller_id'],
-                product_id,
-                product_code,
-                product_images
-            )
-            
-            connection.commit()
+            # product_code = self.service.update_product_code_service(
+            #     connection,
+            #     product_id
+            # )
+            #
+            # self.service.create_stock_service(
+            #     connection,
+            #     product_id,
+            #     stocks
+            # )
+            #
+            # self.service.create_product_history_service(
+            #     connection,
+            #     product_id,
+            #     data
+            # )
+            #
+            # self.service.create_product_sales_volumes_service(
+            #     connection,
+            #     product_id
+            # )
+            #
+            # self.service.create_bookmark_volumes_service(
+            #     connection,
+            #     product_id
+            # )
+            #
+            # self.service.create_product_images_service(
+            #     connection,
+            #     data['seller_id'],
+            #     product_id,
+            #     product_code,
+            #     product_images
+            # )
+            #
+            # connection.commit()
             
             return jsonify({'message': 'success'}), 201
             

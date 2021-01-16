@@ -399,7 +399,7 @@ class ProductManageService:
                 2020-12-30(심원두): 예외처리 구현
                 2020-01-03(심원두): 예외처리 추가/수정
         """
-    
+        
         try:
             if int(data['minimum_quantity']) != 0 and int(data['maximum_quantity']) != 0:
                 if int(data['minimum_quantity']) > int(data['maximum_quantity']):

@@ -32,11 +32,8 @@ from .admin.seller_view import SellerSignupView, SellerSigninView, SellerInfoVie
     SellerPasswordView, SellerSearchView, SellerListView
 from .admin.product_view import (
     ProductRegistView,
-    ProductCreateGetSellerListView,
     ProductManageSearchView,
     ProductManageDetailView,
-    MainCategoriesListView,
-    CreateProductView
 )
 
 

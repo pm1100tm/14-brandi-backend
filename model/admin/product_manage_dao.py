@@ -51,7 +51,7 @@ class ProductManageDao:
             500, {'message': 'product create denied',
                   'errorMessage': 'unable_to_create_product'} : 상품 정보 등록 실패
         """
-    
+        
         sql = """
         INSERT INTO products (
             `is_display`
@@ -66,12 +66,15 @@ class ProductManageDao:
             ,`description`
             ,`detail_information`
             ,`origin_price`
+            ,`is_discount`
             ,`discount_rate`
             ,`discounted_price`
             ,`discount_start_date`
             ,`discount_end_date`
+            ,`is_minimum_sale_one`
             ,`minimum_quantity`
-            ,`maximum_quantity`
+            ,`is_maximum_sale_one`
+            ,`maximum_sale_quantity`
             ,`seller_id`
             ,`account_id`
         ) VALUES (
@@ -87,12 +90,15 @@ class ProductManageDao:
             ,%(description)s
             ,%(detail_information)s
             ,%(origin_price)s
+            ,%(is_discount)s
             ,%(discount_rate)s
             ,%(discounted_price)s
             ,%(discount_start_date)s
             ,%(discount_end_date)s
-            ,%(minimum_quantity)s
-            ,%(maximum_quantity)s
+            ,%(is_minimum_sale_one)s
+            ,%(minimum_sale_quantity)s
+            ,%(is_maximum_sale_one)s
+            ,%(maximum_sale_quantity)s
             ,%(seller_id)s
             ,%(account_id)s
         );
