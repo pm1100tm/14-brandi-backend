@@ -123,7 +123,7 @@
 
 <br>
 
-# Refactoring Plan (~ 2021.01.31)
+# Refactoring Plan
 
 ### 기능 리펙토링 
 - **[상품 관리 / 회원 관리] 리펙토링**
